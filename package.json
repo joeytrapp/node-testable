@@ -1,6 +1,6 @@
 {
   "name": "testable",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "description": "Client side test runner generator",
   "main": "index.js",
   "scripts": {
