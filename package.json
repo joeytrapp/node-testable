@@ -1,6 +1,6 @@
 {
   "name": "testable",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Client side test runner generator",
   "main": "index.js",
   "scripts": {
@@ -11,5 +11,15 @@
     "url": "git://github.com:joeytrapp/node-testable.git"
   },
   "author": "Joey Trapp",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "grunt-contrib-watch": "~0.4.4",
+    "grunt-contrib-jshint": "~0.6.0",
+    "grunt": "~0.4.1",
+    "grunt-contrib-nodeunit": "~0.2.0"
+  },
+  "dependencies": {
+    "ejs": "~0.8.4",
+    "glob": "~3.2.1"
+  }
 }
