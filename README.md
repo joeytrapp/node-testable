@@ -53,15 +53,13 @@ Here is a quick example app using [Express.js](http://expressjs.com/).
 		
 	testableConfig = {
 		framework: 'qunit',
-		files: ['public/js/app.js', 'test/**/*_test.js'],
-		transformPath: 'test/'
+		files: ['public/js/app.js', 'public/test/**/*_test.js'],
+		transformPath: 'public/'
 	};
 	
 	// Make testable assets available
 	app.use(express.static(testable.assetsPath()));
-	
 	app.use(express.static(__dirname + '/public'));
-	app.use(express.static(__dirname + '/test'));
 	
 	app.get('/test.html', function(req, res) {
 		res.setHeader('Content-Type', 'text/html');
