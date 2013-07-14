@@ -27,6 +27,10 @@ Bundled adapters: `qunit` (default), `jasmine`, and `mocha`.
 
 Array of strings that are the files to be loaded in the test runner. These strings are passed through [node-glob](https://github.com/isaacs/node-glob). Files included here are filtered, and css files are included in the page `head`, and js files are included in order in the page `body`.
 
+### config.tests
+
+Array of strings that works exactly like `files`. This should include the files that have your tests. `files` and `tests` have to be separate because code can be injected in between the files script tags and the tests script tags.
+
 ### config.transformPath
 
 This options can be a string or a function. In the resulting html, the paths to the files in the `files` configuration will be relative to `process.cwd()`. Those paths may not be reachable by the browser depending on how the webserver is setup. `transformPath` can modify each path to something that is reachable.
@@ -34,6 +38,10 @@ This options can be a string or a function. In the resulting html, the paths to 
 When `transformPath` is a string, it is used as the search in a call to `String.replace()`. If the `files` option is set to `['tmp/build/js/**/*.js']` and `transformPath` is `tmp/build/`, then in the browser, the script tag src attributes will be `js/...`.
 
 `transformPath` can also be a function which gets the src path as a param and returns the path that should be set in the browser.
+
+### config.adapter
+
+See section at the bottom about custom adapters.
 
 ### config.chai (mocha framework only)
 
@@ -53,7 +61,8 @@ Here is a quick example app using [Express.js](http://expressjs.com/).
 		
 	testableConfig = {
 		framework: 'qunit',
-		files: ['public/js/app.js', 'public/test/**/*_test.js'],
+		files: ['public/js/app.js'],
+		tests: ['public/test/**/*_test.js'],
 		transformPath: 'public/'
 	};
 	
@@ -69,3 +78,35 @@ Here is a quick example app using [Express.js](http://expressjs.com/).
 	app.listen(8000);
 	
 Also check out [testable-middleware](https://github.com/joeytrapp/node-testable-middleware) to use testable with Connect or Express.
+
+## Custom Adapters
+
+To add support for new testing frameworks, or your own framework, you could create a custom adapter. An adapter is simply an object that exposes five methods:
+
+	adapter: {
+		css: [],
+		libs: [],
+		markup: '',
+		extras: '',
+		startup: ''
+	}
+
+### adapter.css
+
+An array of css files necessary for the test framework.
+
+### adapter.libs
+
+An array js files necessary for the test framework.
+
+### adapter.markup
+
+Most frameworks require a small html snippet added to the body. The string returned from `adapter.markup()` is the first thing added to the test runner body tag.
+
+### adapter.extras
+
+The string returned from this method is added to the test runner markup between the `config.files` script tags and the the `config.tests` script tags.
+
+### adapter.startup
+
+The string returned from this method is the last thing added to the test runner.
