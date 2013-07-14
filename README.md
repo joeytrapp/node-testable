@@ -84,11 +84,17 @@ Also check out [testable-middleware](https://github.com/joeytrapp/node-testable-
 To add support for new testing frameworks, or your own framework, you could create a custom adapter. An adapter is simply an object that exposes five methods:
 
 	adapter: {
-		css: [],
-		libs: [],
-		markup: '',
-		extras: '',
-		startup: ''
+		css: function() { return ['custom.css']; },
+		libs: function() { return ['custom.js']; },
+		markup: function() {
+			return '<div id="custom-framework"></div>';
+		},
+		extras: function() {
+			return '<script>MyFramework.setup(config);</script>';
+		},
+		startup: function() {
+			return '<script>MyFramework.run();</script>';
+		}
 	}
 
 ### adapter.css
