@@ -28,4 +28,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask('test', ['jshint', 'nodeunit']);
   grunt.registerTask('autotest', ['test', 'watch:test']);
+
+  grunt.registerTask('default', ['autotest']);
 };
