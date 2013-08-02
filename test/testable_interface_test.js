@@ -1,4 +1,5 @@
-var testable = require('../lib/testable');
+var testable = require('../lib/testable'),
+    cheerio  = require('cheerio');
 
 exports.testable_interface = {
   testAssetsPath: function(test) {
@@ -8,38 +9,110 @@ exports.testable_interface = {
   },
 
   testMarkupQunit: function(test) {
-    var config = {
-      files: ['lib/adapter/**/*.js', 'lib/testable.js'],
-      tests: ['test/**/*_test.js']
+    var config, $;
+    config = {
+      files: ['test/data/app/*.js'],
+      tests: ['test/data/spec/*_spec.js']
     };
-    var regexp = new RegExp('qunit.css.+id="qunit".+id="qunit-fixture".+qunit.js.+');
-    console.log(testable.markup(config));
+    $ = cheerio.load(testable.markup(config));
+    test.equal($('script[src="qunit.js"]').length, 1);
+    test.equal($('link[href="qunit.css"]').length, 1);
+    test.equal($('div#qunit').length, 1);
+    test.equal($('div#qunit-fixture').length, 1);
+    test.equal($('script[src="test/data/app/app.js"]').length, 1);
+    test.equal($('script[src="test/data/app/lib.js"]').length, 1);
+    test.equal($('script[src="test/data/spec/app_spec.js"]').length, 1);
+    test.equal($('script[src="test/data/spec/lib_spec.js"]').length, 1);
     test.done();
   },
 
   testMarkupJasmine: function(test) {
-    var config = {
+    var config, $;
+    config = {
       framework: 'jasmine',
-      cwd: process.cwd() + '/lib',
-      files: ['adapter/**/*.js', 'testable.js'],
-      tests: ['test/**/*_test.js']
+      cwd: process.cwd() + '/test',
+      files: ['data/app/*.js'],
+      tests: ['data/spec/*_spec.js']
     };
-    var regexp = new RegExp('jasmine.css.+jasmine.js.+jasmine-html.js.+jasmineEnv.execute.+');
-    console.log(testable.markup(config));
+    $ = cheerio.load(testable.markup(config));
+    test.equal($('script[src="jasmine.js"]').length, 1);
+    test.equal($('script[src="jasmine-html.js"]').length, 1);
+    test.equal($('link[href="jasmine.css"]').length, 1);
+    test.equal($('script[src="data/app/app.js"]').length, 1);
+    test.equal($('script[src="data/app/lib.js"]').length, 1);
+    test.equal($('script[src="data/spec/app_spec.js"]').length, 1);
+    test.equal($('script[src="data/spec/lib_spec.js"]').length, 1);
+    test.done();
+  },
+  
+  testMarkupMochaDefaults: function(test) {
+    var config, $;
+    config = {
+      framework: 'mocha',
+      transformPath: 'test/data/',
+      files: ['test/data/app/*.js'],
+      tests: ['test/data/spec/*_spec.js']
+    };
+    $ = cheerio.load(testable.markup(config));
+    test.equal($('script[src="mocha.js"]').length, 1);
+    test.equal($('script[src="chai.js"]').length, 1);
+    test.equal($('link[href="mocha.css"]').length, 1);
+    test.equal($('div#mocha').length, 1);
+    test.equal($('script:contains("bdd")').length, 1);
+    test.equal($('script:contains("chai.expect")').length, 1);
+    test.equal($('script[src="app/app.js"]').length, 1);
+    test.equal($('script[src="app/lib.js"]').length, 1);
+    test.equal($('script[src="spec/app_spec.js"]').length, 1);
+    test.equal($('script[src="spec/lib_spec.js"]').length, 1);
     test.done();
   },
 
-  testMarkupMocha: function(test) {
-    var config = {
+  testMarkupMochaExportsShould: function(test) {
+    var config, $;
+    config = {
       framework: 'mocha',
-      chai: 'expect',
-      style: 'tdd',
-      transformPath: 'lib/',
-      files: ['lib/adapter/**/*.js', 'lib/testable.js'],
-      tests: ['test/**/*_test.js']
+      chai: 'should',
+      style: 'exports',
+      transformPath: 'test/data/',
+      files: ['test/data/app/*.js'],
+      tests: ['test/data/spec/*_spec.js']
     };
-    var regexp = new RegExp('mocha.css.+id="mocha".+chai.js.+mocha.js.+chai.expect.+tdd.+');
-    console.log(testable.markup(config));
+    $ = cheerio.load(testable.markup(config));
+    test.equal($('script[src="mocha.js"]').length, 1);
+    test.equal($('script[src="chai.js"]').length, 1);
+    test.equal($('link[href="mocha.css"]').length, 1);
+    test.equal($('div#mocha').length, 1);
+    test.equal($('script:contains("exports")').length, 1);
+    test.equal($('script:contains("chai.should")').length, 1);
+    test.equal($('script[src="app/app.js"]').length, 1);
+    test.equal($('script[src="app/lib.js"]').length, 1);
+    test.equal($('script[src="spec/app_spec.js"]').length, 1);
+    test.equal($('script[src="spec/lib_spec.js"]').length, 1);
+    test.done();
+  },
+
+  testMarkupMochaTddAssert: function(test) {
+    var config, $;
+    config = {
+      framework: 'mocha',
+      chai: 'assert',
+      style: 'tdd',
+      transformPath: 'test/data/',
+      files: ['test/data/app/*.js'],
+      tests: ['test/data/spec/*_spec.js']
+    };
+    $ = cheerio.load(testable.markup(config));
+    test.equal($('script[src="mocha.js"]').length, 1);
+    test.equal($('script[src="chai.js"]').length, 1);
+    test.equal($('link[href="mocha.css"]').length, 1);
+    test.equal($('div#mocha').length, 1);
+    test.equal($('script:contains("tdd")').length, 1);
+    test.equal($('script:contains("chai.assert")').length, 1);
+    test.equal($('script[src="app/app.js"]').length, 1);
+    test.equal($('script[src="app/lib.js"]').length, 1);
+    test.equal($('script[src="spec/app_spec.js"]').length, 1);
+    test.equal($('script[src="spec/lib_spec.js"]').length, 1);
     test.done();
   }
 };
+
