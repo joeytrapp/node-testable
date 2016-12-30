@@ -49,7 +49,7 @@ When using the `mocha` framework, the `chai` configuration option is used to cho
 
 ### config.style (mocha framework only)
 
-When using the `mocha` framework, the `style` configuration option is used to set the spec syntax for mocha. See [mocha interfaces](http://visionmedia.github.io/mocha/#interfaces) for more information. Valid options are `bdd` (default), `tdd`, `exports`, and `qunit`.
+When using the `mocha` framework, the `style` configuration option is used to set the spec syntax for mocha. See [mocha interfaces](http://mochajs.org/#interfaces) for more information. Valid options are `bdd` (default), `tdd`, `exports`, and `qunit`.
 
 ## Example
 
